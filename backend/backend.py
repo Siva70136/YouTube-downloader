@@ -1,4 +1,5 @@
 import yt_dlp
+import os
 from fastapi import FastAPI,Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -77,3 +78,7 @@ def getDetails(request: URLRequest):
         "image":f"{thumbnail_url}",
         "info":result,
     }
+    
+if __name__ == "__main__":
+    port = int(os.environ.get('PORT', 8000))
+    app.run(host="0.0.0.0", port=port)
