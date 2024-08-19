@@ -43,7 +43,14 @@ def download(request: URLRequest):
 @app.post('/fetch')
 def getDetails(request: URLRequest):
     url=request.url
-    ydl_opts = {'format': 'bestvideo[height=1080]+bestaudio/best',  'headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}}
+    ydl_opts = {'format': 'bestvideo[height=1080]+bestaudio/best',
+                 'headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Referer': 'https://www.youtube.com/'
+                  },
+                 }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(url, download=False)
