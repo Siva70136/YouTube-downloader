@@ -83,12 +83,12 @@ def getDetails(request: URLRequest):
     }
     
 
-#if __name__ == "__main__":
-port = int(os.environ.get("PORT", 8000))
-print(f"PORT environment variable: {port}")
-print(f"Starting server on port {port}...")
-try:
-    uvicorn.run(app, host="0.0.0.0", port=port)
-    print("Server started successfully.")
-except Exception as e:
-    print(f"Failed to start server: {e}")
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    print(f"PORT environment variable: {port}")
+    print(f"Starting server on port {port}...")
+    try:
+        uvicorn.run(app, host="0.0.0.0", port=port)
+        print("Server started successfully.")
+    except Exception as e:
+        print(f"Failed to start server: {e}")

@@ -4,7 +4,7 @@ import './App.css'
 const Home = () => {
   const [url, setUrl] = useState('');
   const [item, setItem] = useState([]);
-  const api = 'http://127.0.0.1:8000';
+  const api = 'https://youtube-downloader-dbqp.onrender.com';
 
 
 
