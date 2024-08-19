@@ -22,6 +22,9 @@ class URLRequest(BaseModel):
     url: str
     qual:str
 
+@app.get('/get')
+def get():
+    return {"Status":"Success"}
 @app.post('/download')
 
 def download(request: URLRequest):
@@ -40,7 +43,7 @@ def download(request: URLRequest):
 @app.post('/fetch')
 def getDetails(request: URLRequest):
     url=request.url
-    ydl_opts = {'format': 'bestvideo[height=1080]+bestaudio/best'}
+    ydl_opts = {'format': 'bestvideo[height=1080]+bestaudio/best',  'headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}}
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(url, download=False)
