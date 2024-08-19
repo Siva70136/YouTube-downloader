@@ -4,7 +4,7 @@ import './App.css'
 const Home = () => {
   const [url, setUrl] = useState('');
   const [item, setItem] = useState([]);
-  const api = 'https://youtube-downloader-dbqp.onrender.com';
+  const api = 'https://youtube-downloader-l077.onrender.com';
 
 
 
@@ -14,7 +14,10 @@ const Home = () => {
       headers: {
         'Content-Type': "application/json",
       },
-      body: JSON.stringify({ url })
+      body: JSON.stringify({
+        url,
+        qual: "1080"
+      })
     }
     //console.log(options);
     try {
@@ -33,7 +36,7 @@ const Home = () => {
 
   const download = async (res) => {
     const quality = res.resolution.split('x');
-    const qual=quality[1];
+    const qual = quality[1];
 
     const options = {
       method: "POST",
@@ -42,7 +45,8 @@ const Home = () => {
       },
       body: JSON.stringify({
         url,
-        qual })
+        qual
+      })
     }
 
     try {
