@@ -28,7 +28,7 @@ def download(request: URLRequest):
     url=request.url
     quality=request.qual
     print(quality)
-    ydl_opts = {'format': f'bestvideo[height={quality}]+bestaudio/best'}
+    ydl_opts = {'format': f'bestvideo[height={quality}]+bestaudio/best','proxy': 'http://123.456.789.000:8080'}
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(url, download=True)
@@ -40,8 +40,8 @@ def download(request: URLRequest):
 @app.post('/fetch')
 def getDetails(request: URLRequest):
     url=request.url
-    ydl_opts = {'format': 'bestvideo[height=1080]+bestaudio/best'}
-    desired_resolutions = {"144p", "250p", "360p", "1080p", "2186p"}
+    ydl_opts = {'format': 'bestvideo[height=1080]+bestaudio/best','proxy': 'http://123.456.789.000:8080'}
+
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(url, download=False)
         video_title = info_dict.get('title', None)
