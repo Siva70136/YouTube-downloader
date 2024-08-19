@@ -28,7 +28,7 @@ def download(request: URLRequest):
     url=request.url
     quality=request.qual
     print(quality)
-    ydl_opts = {'format': f'bestvideo[height={quality}]+bestaudio/best','proxy': 'http://123.456.789.000:8080'}
+    ydl_opts = {'format': f'bestvideo[height={quality}]+bestaudio/best','outtmpl': '%(title)s.%(ext)s'}
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(url, download=True)
@@ -40,47 +40,51 @@ def download(request: URLRequest):
 @app.post('/fetch')
 def getDetails(request: URLRequest):
     url=request.url
-    ydl_opts = {'format': 'bestvideo[height=1080]+bestaudio/best','proxy': 'http://123.456.789.000:8080'}
-
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(url, download=False)
-        video_title = info_dict.get('title', None)
-        video_duration = info_dict.get('duration', None)
-        thumbnail_url = info_dict.get('thumbnail', 'No Thumbnail')
-        formats = info_dict.get('formats', [])
-        valid_formats = [
-            {
-                'format_id': f['format_id'],
-                'resolution': f.get('resolution'), 
-                'filesize': f.get('filesize', 0),
-                'ext': f.get('ext', 'N/A'),
-            }
-            for f in formats if f.get('filesize') is not None
-        ]
-        
-        filtered_formats = {}
-        for f in valid_formats:
-            res = f['resolution']
-            if res not in filtered_formats or f['filesize'] > filtered_formats[res]['filesize']:
-                filtered_formats[res] = f
-                
-        result = [{
-                    'resolution': res,
+    ydl_opts = {'format': 'bestvideo[height=1080]+bestaudio/best'}
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=False)
+            video_title = info_dict.get('title', None)
+            video_duration = info_dict.get('duration', None)
+            thumbnail_url = info_dict.get('thumbnail', 'No Thumbnail')
+            formats = info_dict.get('formats', [])
+            valid_formats = [
+                {
                     'format_id': f['format_id'],
-                    'extension': f['ext'],
-                    'filesize': f['filesize'],
-                    'image': info_dict.get('thumbnail', 'No image available')
+                    'resolution': f.get('resolution'), 
+                    'filesize': f.get('filesize', 0),
+                    'ext': f.get('ext', 'N/A'),
                 }
-                for res, f in filtered_formats.items()
+                for f in formats if f.get('filesize') is not None
             ]
+            
+            filtered_formats = {}
+            for f in valid_formats:
+                res = f['resolution']
+                if res not in filtered_formats or f['filesize'] > filtered_formats[res]['filesize']:
+                    filtered_formats[res] = f
+                    
+            result = [{
+                        'resolution': res,
+                        'format_id': f['format_id'],
+                        'extension': f['ext'],
+                        'filesize': f['filesize'],
+                        'image': info_dict.get('thumbnail', 'No image available')
+                    }
+                    for res, f in filtered_formats.items()
+                ]
 
-        
-    return {
-        "title":f"{video_title}",
-        "time":f"{video_duration}",
-        "image":f"{thumbnail_url}",
-        "info":result,
-    }
+            
+        return {
+            "title":f"{video_title}",
+            "time":f"{video_duration}",
+            "image":f"{thumbnail_url}",
+            "info":result,
+        }
+    except yt_dlp.utils.DownloadError as e:
+        return {"error": str(e)}
+    except Exception as e:
+        return {"error": "An unexpected error occurred: " + str(e)}
     
 
 if __name__ == "__main__":
